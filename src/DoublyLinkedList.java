@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class DoublyLinkedList<E> implements List<E>{
     public Node<E> head;
     public Node<E> getHead() {
@@ -13,27 +15,42 @@ public class DoublyLinkedList<E> implements List<E>{
     @Override
     public void add(E element) {
         if (getHead() == null){
-            Node<E> head = new Node<>(element);
+            head = new Node<>(element);
         }
         else{
             Node<E> temp = head;
-            while (temp.getNextNode() != null){ //Work temp all the way down to the end of the node chain
-                temp = temp.getNextNode();
+            while (true){ //Work temp all the way down to the end of the node chain
+                if (temp.getNextNode() == null){
+                    temp.setNextNode(new Node<>(element));
+                    System.out.println("Add new value");
+                    break;
+                }
+                else{
+                    temp = temp.getNextNode();
+                }
+
             }
-            temp.setNextNode(new Node<>(element)); //Make a new node after temp to continue the chain
+
+             //Make a new node after temp to continue the chain
         }
     }
 
     @Override
     public void add(int i, E element) throws IndexOutOfBoundsException {
-        if (i > size() - 1){
+        System.out.println(size());
+        if (i > (size() - 1)){
             throw new IndexOutOfBoundsException();
         }
         else{
             Node<E> temp = head;
             for (int e = 0; e < i; e++){
-                temp = head.getNextNode(); //VISUALIZE the switching of Nexts at home with a WHITE BOARD!!!
+                temp = temp.getNextNode();
             }
+            Node<E> oldPrev = temp.getPrevNode();
+            temp.setPrevNode(new Node<>(element));
+            Node<E> oldPnext = temp.getPrevNode();
+            oldPrev.setNextNode(oldPnext);
+            oldPnext.setNextNode(temp);
         }
 
     }
@@ -63,9 +80,16 @@ public class DoublyLinkedList<E> implements List<E>{
         if (getHead() != null){
             Node<E> temp = head;
             int count = 0;
-            while (temp.getNextNode() != null){
-                temp = temp.getNextNode();
-                count ++;
+            while (true){
+                if (temp.getNextNode() == null){
+                    count++;
+                    break;
+                }
+                else{
+                    temp = temp.getNextNode();
+                    count ++;
+                }
+
 
             }
             return count;
@@ -79,5 +103,27 @@ public class DoublyLinkedList<E> implements List<E>{
             return true;
         }
         return false;
+    }
+
+    public String toString(){
+        Node<E> temp = head;
+
+        ArrayList<E> list = new ArrayList<>();
+        while (true){ //Work temp all the way down to the end of the node chain
+            if (temp.getNextNode() == null){
+                list.add(temp.getValue());
+                break;
+            }
+            else{
+                list.add(temp.getValue());
+                temp = temp.getNextNode();
+            }
+
+
+
+
+        }
+
+        return list.toString();
     }
 }
