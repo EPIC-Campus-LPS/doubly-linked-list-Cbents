@@ -10,6 +10,10 @@ public class Main{
         list.add(0, 5);
         list.set(2, 50);
         System.out.println(list.toString()); // [5, 10, 50, 40, 30]
+        list.remove(4);
+        list.remove(2);
+        System.out.println(list.size()); // 3
+        System.out.println(list.toString()); // [5, 10, 40]
     }
 }
 

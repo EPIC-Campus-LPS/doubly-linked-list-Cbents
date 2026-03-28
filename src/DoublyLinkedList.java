@@ -37,42 +37,123 @@ public class DoublyLinkedList<E> implements List<E>{
 
     @Override
     public void add(int i, E element) throws IndexOutOfBoundsException {
-        System.out.println(size());
-        if (i > (size() - 1)){
+        if (i < 0 || i > size()) {
             throw new IndexOutOfBoundsException();
         }
-        else{
-            Node<E> temp = head;
-            for (int e = 0; e < i; e++){
-                temp = temp.getNextNode();
+
+
+        if (i == 0) {
+            Node<E> newNode = new Node<>(element);
+            newNode.setNextNode(head);
+            if (head != null) {
+                head.setPrevNode(newNode);
             }
-            Node<E> oldPrev = temp.getPrevNode();
-            temp.setPrevNode(new Node<>(element));
-            Node<E> oldPnext = temp.getPrevNode();
-            oldPrev.setNextNode(oldPnext);
-            oldPnext.setNextNode(temp);
+            head = newNode;
+            return;
         }
 
+
+        Node<E> temp = head;
+        for (int e = 0; e < i - 1; e++) {
+            temp = temp.getNextNode();
+        }
+
+        Node<E> oldNext = temp.getNextNode();
+        Node<E> oldPnext = new Node<>(element);
+
+        // link new node
+        oldPnext.setPrevNode(temp);
+        oldPnext.setNextNode(oldNext);
+
+        // fix neighbors
+        temp.setNextNode(oldPnext);
+
+        if (oldNext != null) {
+            oldNext.setPrevNode(oldPnext);
+        }
     }
 
     @Override
     public E remove() {
+        if (head == null) {
+            return null; // or throw exception if your class requires it
+        }
+
+        E value = head.getValue();
+
+        head = head.getNextNode();
+
+        if (head != null) {
+            head.setPrevNode(null);
+        }
         return null;
     }
 
+
     @Override
     public E remove(int i) throws IndexOutOfBoundsException {
-        return null;
+        if (i < 0 || i >= size()) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        // Remove head
+        if (i == 0) {
+            E value = head.getValue();
+            head = head.getNextNode();
+            if (head != null) {
+                head.setPrevNode(null);
+            }
+            return value;
+        }
+
+        // go to node BEFORE the one to remove
+        Node<E> temp = head;
+        for (int e = 0; e < i - 1; e++) {
+            temp = temp.getNextNode();
+        }
+
+        Node<E> toRemove = temp.getNextNode();
+        Node<E> next = toRemove.getNextNode();
+
+        E value = toRemove.getValue();
+
+        // reconnect
+        temp.setNextNode(next);
+        if (next != null) {
+            next.setPrevNode(temp);
+        }
+
+        return value;
     }
 
     @Override
     public Node<E> get(int i) throws IndexOutOfBoundsException {
-        return null;
+        if (i < 0 || i >= size()) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        Node<E> temp = head;
+
+        for (int e = 0; e < i; e++) {
+            temp = temp.getNextNode();
+        }
+
+        return temp;
     }
 
     @Override
     public void set(int i, E element) throws IndexOutOfBoundsException {
+        if (i < 0 || i >= size()) {
+            throw new IndexOutOfBoundsException();
+        }
 
+        Node<E> temp = head;
+
+        for (int e = 0; e < i; e++) {
+            temp = temp.getNextNode();
+        }
+
+        temp.setValue(element);
     }
 
     @Override
